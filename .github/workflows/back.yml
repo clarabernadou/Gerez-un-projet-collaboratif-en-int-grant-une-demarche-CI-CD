@@ -63,13 +63,7 @@ jobs:
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
         with:
-          # Ajouter le fichier de configuration de SonarCloud
-          args: >
-            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
-            -Dsonar.organization=${{ secrets.SONAR_ORG }}
-            -Dsonar.token=${{ secrets.SONAR_TOKEN }}
-            -Dsonar.java.binaries=back/target/classes
-            -Dsonar.java.libraries=back/target/*.jar
+          projectBaseDir: back
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
