@@ -6,14 +6,12 @@ on:
       - develop
     paths: 
       - 'back/**'
-      - '.github/workflows/**'
 
   pull_request:
     branches:
       - main
     paths: 
       - 'back/**'
-      - '.github/workflows/**'
 
 jobs:
   # 1. Validates tests on a pull request
