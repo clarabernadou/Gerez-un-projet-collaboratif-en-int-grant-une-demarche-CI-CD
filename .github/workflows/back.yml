@@ -28,10 +28,9 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
 
-      - name: Install Dependencies and Run Tests
+      - name: Run Tests & Coverage Report
         working-directory: back
         run: |
-          mvn clean install
           mvn test jacoco:report
 
       - name: Upload Code Coverage Report
@@ -57,13 +56,10 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
 
-      - name: Build with Maven
-        working-directory: back
-        run: mvn clean package
-
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
         with:
+          # Ajouter le fichier de configuration de SonarCloud
           args: >
             -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
             -Dsonar.organization=${{ secrets.SONAR_ORG }}
