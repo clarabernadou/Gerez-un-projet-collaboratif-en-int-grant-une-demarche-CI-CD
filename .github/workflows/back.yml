@@ -4,14 +4,12 @@ on:
   push:
     branches:
       - develop
-    paths:
-      - 'back/**'
+      - main
 
   pull_request:
     branches:
       - main
-    paths:
-      - 'back/**'
+      - develop
 
 jobs:
   # 1. Validates tests on a pull request
@@ -22,7 +20,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
         with:
-          fetch-depth: 0
+          fetch-depth: 0 # Shallow clones
 
       - name: Set up Java
         uses: actions/setup-java@v2
@@ -51,7 +49,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
         with:
-          fetch-depth: 0
+          fetch-depth: 0 # Shallow clones
 
       - name: Set up Java
         uses: actions/setup-java@v2
@@ -66,7 +64,13 @@ jobs:
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
         with:
-          projectBaseDir: back
+          args: >
+            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
+            -Dsonar.organization=${{ secrets.SONAR_ORG }}
+            -Dsonar.token=${{ secrets.SONAR_TOKEN }}
+            -Dsonar.java.binaries=back/target/classes
+            -Dsonar.java.libraries=back/target/*.jar
+            -Dsonar.coverage.jacoco.xmlReportPaths=back/target/site/jacoco/jacoco.xml
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 

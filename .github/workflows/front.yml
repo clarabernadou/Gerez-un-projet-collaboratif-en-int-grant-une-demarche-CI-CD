@@ -4,14 +4,12 @@ on:
   push:
     branches:
       - develop
-    paths:
-      - 'front/**'
+      - main
 
   pull_request:
     branches:
       - main
-    paths:
-      - 'front/**'
+      - develop
 
 jobs:
   # 1. Validates tests on a pull request
@@ -22,7 +20,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
         with:
-          fetch-depth: 0
+          fetch-depth: 0 # Shallow clones
 
       - name: Set Up Node.js
         uses: actions/setup-node@v2
@@ -50,7 +48,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
         with:
-          fetch-depth: 0
+          fetch-depth: 0 # Shallow clones
 
       - name: Set Up Node.js
         uses: actions/setup-node@v2
@@ -61,6 +59,11 @@ jobs:
         uses: SonarSource/sonarcloud-github-action@v2
         with:
           projectBaseDir: front
+          args: >
+            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
+            -Dsonar.organization=${{ secrets.SONAR_ORG }}
+            -Dsonar.token=${{ secrets.SONAR_TOKEN }}
+            -Dsonar.javascript.lcov.reportPaths=coverage/bobapp/lcov.info
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
