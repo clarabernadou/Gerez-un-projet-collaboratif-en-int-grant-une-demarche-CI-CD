@@ -1,16 +1,73 @@
-name: Back-end CI/CD with Tests, SonarCloud & Docker
+name: Back-end CI/CD with coverage report, SonarCloud analysis & Docker image
 
 on:
   push:
-    branches:
-      - develop
     paths:
       - 'back/**'
-
-  pull_request:
+      - '.github/workflows/**'
     branches:
       - main
+  pull_request:
     paths:
       - 'back/**'
+      - '.github/workflows/**'
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
 
 jobs:
+  backend-testing-and-sonarcloud-analysis:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Set up Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+
+      - name: Install Dependencies and Run Coverage
+        working-directory: back
+        run: |
+          mvn clean install
+          mvn test jacoco:report
+
+      - name: Upload Code Coverage Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: back/target/site/jacoco/
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2
+        with:
+          projectBaseDir: back
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
+          SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
+
+  docker-build-and-push:
+    needs: backend-testing-and-sonarcloud-analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Build and Push Docker Image
+        run: |
+          docker build -t bobapp-back ./back
+          docker tag bobapp-back ${{ secrets.DOCKER_USERNAME }}/bobapp-back:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/bobapp-back:latest
