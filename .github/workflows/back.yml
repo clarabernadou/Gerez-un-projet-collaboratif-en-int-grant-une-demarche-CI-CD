@@ -38,7 +38,7 @@ jobs:
         working-directory: back
         run: |
           mvn clean install
-          mvn test jacoco:report
+          mvn -B test
 
       - name: Upload Code Coverage Report
         uses: actions/upload-artifact@v3
