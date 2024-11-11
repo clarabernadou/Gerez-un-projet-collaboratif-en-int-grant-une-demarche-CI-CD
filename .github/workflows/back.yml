@@ -21,7 +21,6 @@ on:
 jobs:
   backend-run-tests-for-protection-rule: 
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -40,7 +39,7 @@ jobs:
 
   backend-testing-and-sonarcloud-analysis:
     runs-on: ubuntu-latest
-
+    needs: backend-run-tests-for-protection-rule
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -78,7 +77,6 @@ jobs:
     needs: backend-testing-and-sonarcloud-analysis
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request' && github.base_ref == 'main'
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3

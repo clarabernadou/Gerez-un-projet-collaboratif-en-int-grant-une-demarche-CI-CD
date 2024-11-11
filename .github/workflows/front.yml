@@ -38,6 +38,7 @@ jobs:
 
   frontend-testing-and-sonarcloud-analysis:
     runs-on: ubuntu-latest
+    needs: frontend-run-tests-for-protection-rule
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -72,7 +73,6 @@ jobs:
     needs: frontend-testing-and-sonarcloud-analysis
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request' && github.base_ref == 'main'
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
