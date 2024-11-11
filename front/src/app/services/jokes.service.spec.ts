@@ -18,4 +18,7 @@ describe('JokesService', () => {
     expect(service).toBeTruthy();
   });
 
+  it('error', () => {
+    expect(service).toBeFalsy();
+  });
 });
