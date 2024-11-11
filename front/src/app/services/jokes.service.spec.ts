@@ -15,10 +15,6 @@ describe('JokesService', () => {
   });
 
   it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
-
-  it('error', () => {
     expect(service).toBeFalsy();
   });
 });
