@@ -11,6 +11,8 @@ on:
     paths:
       - 'front/**'
       - '.github/workflows/**'
+    branches:
+      - main
     types:
       - opened
       - synchronize
