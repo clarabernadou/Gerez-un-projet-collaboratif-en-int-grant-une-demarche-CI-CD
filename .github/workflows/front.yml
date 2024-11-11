@@ -19,6 +19,23 @@ on:
       - reopened
 
 jobs:
+  frontend-run-tests-for-protection-rule:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set Up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install Dependencies & Run Coverage
+        run: npm ci && npm run test -- --no-watch --no-progress --browsers=ChromeHeadless
+        working-directory: front
+
   frontend-testing-and-sonarcloud-analysis:
     runs-on: ubuntu-latest
     steps:
