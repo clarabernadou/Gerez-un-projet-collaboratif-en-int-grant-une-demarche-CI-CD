@@ -30,7 +30,7 @@ jobs:
       - name: Set Up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: '20'
 
       - name: Install Dependencies & Run Coverage
         run: npm ci && npm run test -- --no-watch --no-progress --browsers=ChromeHeadless
@@ -48,7 +48,7 @@ jobs:
       - name: Set Up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: '20'
 
       - name: Install Dependencies & Run Coverage
         run: npm ci && npm run test -- --no-watch --no-progress --browsers=ChromeHeadless --code-coverage
