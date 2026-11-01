@@ -1,0 +1,47 @@
+name: Deploy demo to GitHub Pages
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: front
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 16
+          cache: npm
+          cache-dependency-path: front/package-lock.json
+      - run: npm ci --legacy-peer-deps
+      - name: Build the Angular app for the repository sub-path (source files untouched)
+        run: npx ng build --configuration development --base-href /Gerez-un-projet-collaboratif-en-int-grant-une-demarche-CI-CD/
+      - name: Add the simulated API, its data and the API documentation
+        run: |
+          cp ../demo/demo-api.js dist/bobapp/
+          cp ../back/src/main/resources/json/jokes.json dist/bobapp/
+          cp -r ../api-docs dist/bobapp/api-docs
+          sed -i 's#</head>#<script src="demo-api.js"></script></head>#' dist/bobapp/index.html
+          test "$(grep -c 'demo-api.js' dist/bobapp/index.html)" -eq 1
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: front/dist/bobapp
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

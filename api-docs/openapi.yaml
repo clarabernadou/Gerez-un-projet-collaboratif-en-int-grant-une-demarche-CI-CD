@@ -1,0 +1,42 @@
+openapi: 3.0.3
+info:
+  title: BobApp — API back-end
+  version: 1.0.0
+  description: |
+    API REST de BobApp, une petite application qui affiche une blague au hasard. Elle expose une seule route.
+
+    Cette documentation est rédigée à partir du code du dépôt (contrôleur, service et fichier de données `jokes.json`). Elle décrit l'API ; aucun serveur n'est hébergé ici. La démonstration en ligne simule cette route dans le navigateur avec les blagues du projet.
+
+    Il n'y a pas d'authentification.
+servers:
+  - url: http://localhost:8080
+    description: Serveur local (le front de développement redirige `/api` vers ce port)
+tags:
+  - name: Blagues
+paths:
+  /api/joke:
+    get:
+      tags: [Blagues]
+      summary: Obtenir une blague au hasard
+      description: "Renvoie une blague tirée au hasard parmi celles du fichier `jokes.json` (50 blagues). Deux appels successifs peuvent renvoyer la même blague."
+      responses:
+        '200':
+          description: Une blague
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Joke'
+              example:
+                joke: "C'est l'histoire du ptit dej, tu la connais ?"
+                response: Pas de bol.
+components:
+  schemas:
+    Joke:
+      type: object
+      properties:
+        joke:
+          type: string
+          description: Le début de la blague
+        response:
+          type: string
+          description: La chute
